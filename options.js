@@ -12,13 +12,11 @@ async function saveOptions(e) {
     console.log('Saving settings:', settings);
     await browser.storage.sync.set(settings);
 
-    // Show save confirmation
     const button = document.querySelector('button[type="submit"]');
     const originalText = button.textContent;
     button.textContent = 'Saved!';
     button.disabled = true;
     
-    // Reset button after 1 second
     setTimeout(() => {
         button.textContent = originalText;
         button.disabled = false;
@@ -39,8 +37,8 @@ async function restoreOptions() {
     if (radioButton) {
         radioButton.checked = true;
     } else {
-        // Fallback to copyToClipboard if no valid option is found
-        document.querySelector('input[value="copyToClipboard"]').checked = true;
+        // Fallback to download if no valid option is found
+        document.querySelector('input[value="download"]').checked = true;
     }
 
     // Set filetype and visibility
