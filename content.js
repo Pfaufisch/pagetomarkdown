@@ -108,13 +108,11 @@ async function handleConversion(sendResponse) {
                 message: 'Content copied to clipboard'
             });
         } else {
-            let fileName = markdownData.fileName;
-
             sendResponse({
                 success: true,
                 action: 'download',
                 markdownContent: markdownData.content,
-                fileName: fileName
+                fileName: markdownData.fileName,
             });
         }
     } catch (error) {
@@ -126,7 +124,7 @@ async function handleConversion(sendResponse) {
     }
 }
 
-async function convertPageToMarkdown(extension = null) {
+async function convertPageToMarkdown(extension) {
     console.log('Starting conversion...');
     try {
         // First pass just for metadata extraction from pristine HTML
