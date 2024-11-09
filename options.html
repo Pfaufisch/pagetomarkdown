@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="color-scheme" content="dark light">
+    <style>
+      body {
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+        margin: 0;
+        color: #15141A;
+      }
+
+      .content {
+        padding: 24px 48px;
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section-header {
+        margin-bottom: 16px;
+      }
+
+      h2 {
+        font-size: 17px;
+        font-weight: 600;
+        margin: 0 0 4px 0;
+      }
+
+      .section-description {
+        color: #666;
+        font-size: 13px;
+        margin: 0;
+      }
+
+      .radio-group {
+        margin: 16px 0;
+      }
+
+      .radio-option {
+        margin: 8px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .radio-option input[type="radio"] {
+        margin: 0;
+        width: 16px;
+        height: 16px;
+      }
+
+      .filetype-settings {
+        display: none;
+        margin: 16px 0;
+      }
+
+      .filetype-settings label {
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      select {
+        padding: 4px 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        background-color: #fff;
+        min-width: 120px;
+      }
+
+      button {
+        background-color: #0060df;
+        border: none;
+        color: white;
+        padding: 8px 16px;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+        margin-top: 24px;
+      }
+
+      button:hover {
+        background-color: #0250bb;
+      }
+
+      button:active {
+        background-color: #003eaa;
+      }
+
+      button:disabled {
+        background-color: #97c1ff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: #23222b;
+          color: #fbfbfe;
+        }
+
+        .section-description {
+          color: #b1b1b3;
+        }
+
+        select {
+          background-color: #42414d;
+          border-color: #52525e;
+          color: #fbfbfe;
+        }
+      }
+    </style>
+  </head>
+
+<body>
+  <div class="content">
+    <form>
+      <div class="section">
+        <div class="section-header">
+          <h2>Output Handling</h2>
+          <p class="section-description">Choose how extracted content should be processed</p>
+        </div>
+
+        <div class="radio-group">
+          <div class="radio-option">
+            <input class="actionOption" type="radio" id="copyToClipboard" value="copyToClipboard" name="defaultAction">
+            <label for="copyToClipboard">Copy to Clipboard</label>
+          </div>
+
+          <div class="radio-option">
+            <input class="actionOption" type="radio" id="download" value="download" name="defaultAction">
+            <label for="download">Download</label>
+          </div>
+        </div>
+
+        <div id="filetypeSettings" class="filetype-settings">
+          <label for="filetype">Download Format</label>
+          <select name="filetype" id="filetype">
+            <option value="txt">.txt</option>
+            <option value="md">.md</option>
+          </select>
+        </div>
+
+        <button type="submit">Save</button>
+      </div>
+    </form>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

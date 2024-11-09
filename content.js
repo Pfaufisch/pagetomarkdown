@@ -1,5 +1,55 @@
 console.log('Content script loaded');
 
+async function getSettings() {
+    try {
+        const settings = await browser.storage.sync.get({
+            defaultAction: 'download',
+            filetype: 'txt'
+        });
+    
+        console.log('Retrieved settings:', settings);
+        return settings;
+    } catch (error) {
+        console.error('Error getting settings:', error);
+        //return { defaultAction: 'download', filetype: 'txt' }; // fallback to defaults
+    }
+}
+
+async function copyToClipboard(text) {
+    try {
+        await navigator.clipboard.writeText(text);
+        showToast('Copied to clipboard!');
+    } catch (error) {
+        console.error('Failed to copy to clipboard:', error);
+        throw new Error('Failed to copy to clipboard');
+    }
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background-color: #4CAF50;
+        color: white;
+        padding: 16px;
+        border-radius: 4px;
+        z-index: 2147483647;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    `;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.5s ease';
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+
 // Make sure Readability is available
 if (typeof Readability === 'undefined') {
     console.error('Readability is not defined!');
@@ -39,24 +89,50 @@ let preservedMetadata = null;
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('Message received in content script:', message);
     if (message.action === "convert") {
-        convertPageToMarkdown()
-        .then(markdownData => {
-            console.log('Conversion successful:', markdownData);
-            sendResponse({
-                success: true,
-                markdownContent: markdownData.content,
-                fileName: markdownData.fileName
-            });
-        })
-        .catch((error) => {
-            console.error('Error in convertPageToMarkdown:', error);
-            sendResponse({ success: false, error: error.message });
-        });
+        handleConversion(sendResponse);
         return true;
     }
 });
 
-async function convertPageToMarkdown() {
+async function handleConversion(sendResponse) {
+    console.log("invoked handle conversion");
+    try {
+        // Get user settings
+        const settings = await getSettings();
+        console.log('Using settings:', settings);
+
+        // Convert page to markdown
+        const markdownData = await convertPageToMarkdown(settings.filetype);
+
+        if (settings.defaultAction === 'copyToClipboard') {
+            // Copy to clipboard and show toast
+            await copyToClipboard(markdownData.content);
+            sendResponse({
+                success: true,
+                action: 'clipboard',
+                message: 'Content copied to clipboard'
+            });
+        } else {
+            // Prepare for download
+            let fileName = markdownData.fileName;
+
+            sendResponse({
+                success: true,
+                action: 'download',
+                markdownContent: markdownData.content,
+                fileName: fileName
+            });
+        }
+    } catch (error) {
+        console.error('Error in handleConversion:', error);
+        sendResponse({ 
+            success: false, 
+            error: error.message 
+        });
+    }
+}
+
+async function convertPageToMarkdown(extension = null) {
     console.log('Starting conversion...');
     try {
         // First pass just for metadata extraction from pristine HTML
@@ -206,7 +282,7 @@ async function convertPageToMarkdown() {
         };
 
         // Create filename
-        const fileName = `${sanitizedMetadata.title} - ${sanitizedMetadata.siteName}.txt`
+        const fileName = `${sanitizedMetadata.title} - ${sanitizedMetadata.siteName}.${extension}`
         .replace(/[/\\?%*:|"<>]/g, '-')
         .replace(/\s+/g, ' ');
 

@@ -6,7 +6,9 @@
 
   "permissions": [
     "activeTab",
-    "downloads"
+    "downloads",
+    "storage",
+    "clipboardWrite"
   ],
 
   "browser_action": {
@@ -32,6 +34,16 @@
       "content.js"
     ]
   }],
+
+  "options_ui": {
+    "page": "options.html"
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "addon@example.com"
+    }
+  },
 
   "icons": {
     "48": "icons/icon48.png",
