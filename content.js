@@ -95,10 +95,8 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 async function handleConversion(sendResponse) {
-    console.log("invoked handle conversion");
     try {
         const settings = await getSettings();
-        console.log('Using settings:', settings);
 
         const markdownData = await convertPageToMarkdown(settings.filetype);
 
