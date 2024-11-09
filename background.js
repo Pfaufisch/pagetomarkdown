@@ -23,8 +23,8 @@ browser.browserAction.onClicked.addListener((tab) => {
             return browser.downloads.download({
                 url: url,
                 filename: response.fileName,
-                saveAs: false,
-                conflictAction: 'uniquify'
+                saveAs: false, // Changed from true to false
+                conflictAction: 'uniquify' // Automatically adds numbers to avoid conflicts
             }).finally(() => {
                 URL.revokeObjectURL(url);
             });
