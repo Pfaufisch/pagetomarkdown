@@ -97,15 +97,12 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 async function handleConversion(sendResponse) {
     console.log("invoked handle conversion");
     try {
-        // Get user settings
         const settings = await getSettings();
         console.log('Using settings:', settings);
 
-        // Convert page to markdown
         const markdownData = await convertPageToMarkdown(settings.filetype);
 
         if (settings.defaultAction === 'copyToClipboard') {
-            // Copy to clipboard and show toast
             await copyToClipboard(markdownData.content);
             sendResponse({
                 success: true,
@@ -113,7 +110,6 @@ async function handleConversion(sendResponse) {
                 message: 'Content copied to clipboard'
             });
         } else {
-            // Prepare for download
             let fileName = markdownData.fileName;
 
             sendResponse({
