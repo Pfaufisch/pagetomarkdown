@@ -4,14 +4,14 @@ async function getSettings() {
     try {
         const settings = await browser.storage.sync.get({
             defaultAction: 'download',
-            filetype: 'txt'
+            filetype: 'md'
         });
     
         console.log('Retrieved settings:', settings);
         return settings;
     } catch (error) {
         console.error('Error getting settings:', error);
-        //return { defaultAction: 'download', filetype: 'txt' }; // fallback to defaults
+        return { defaultAction: 'download', filetype: 'md' }; // fallback to defaults
     }
 }
 
